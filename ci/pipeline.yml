@@ -26,7 +26,7 @@ resources:
           "client_id": "103698173895213728444",
           "type": "service_account"
         }
-      regexp: concourse/demo-onlinestore-ui.jar
+      regexp: concourse/demo-onlinestore-ui.war
 
   - name: cf-push
     type: cf
@@ -73,12 +73,12 @@ jobs:
           app_preffix: {{app-preffix}}
       - put: upload-artifact
         params: 
-          file: build/demo-onlinestore-ui.jar
+          file: build/demo-onlinestore-ui.war
       ##cf push
       - put: cf-push
         params:
           manifest: app-manifest-output/manifest.yml
-          path: build/demo-onlinestore-ui.jar
+          path: build/demo-onlinestore-ui.war
 
   - name: smoke-test
     public: true
