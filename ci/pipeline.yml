@@ -1,0 +1,116 @@
+---
+resource_types:
+  - name: gcs-resource
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
+
+######RESOURCE######
+resources:
+  - name: demo-onlinestore-ui
+    type: git
+    source:
+      uri: {{github-uri}}
+      branch: {{github-branch}}
+    check_every: 10s
+
+  - name: upload-artifact
+    type: gcs-resource
+    source:
+      bucket: concourse
+      json_key: |
+        {
+          "private_key_id": "213719aecf87892e978dc8337f9d5fac219ba4f6",
+          "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCkwFV8Ld3nIF+F\nvmq6S4ajeHQpu8xGGCjLRa5WRwFV4e6eAhr8PzFbarMLsliMs1d/fUM4/F2Xh5Xn\ngQuMWeXe5boe7YSaftIMz6GVXxcHkOHBDJP8YGNo9Z1IiLKc6Tg9Y1P6WT8ZpGWf\nZy/zKUPhp1m47OAQglqFpTFr6KM6ttOoZamoh/v/s8FncHKiInG1OoqClutyU/69\n0KmlxQfYVTJnBKPwFVZw7BcfMHswjAzRJiWR0d7TZqaS9VVjIDkSzIQBj3FsFgPg\nhkuN+IaeDUbSV6yl7NrZhxS53dpyzyiYZ/73KL5FDwuqI8NfH0rfOTJOW7xg6y8t\ntM1iiQIxAgMBAAECggEAY7rqBJnfUiIOsO9rvAosHpiz+O9t4KCPUT2FI0UoUczK\nnWu42imGv0f/ynzTjZiixtIU91INdcTlwZYkX3mr5Ro7aK1vL/bFQGwP7FP7pODX\nR/1NN+FBTDAiXd4iAUpMeRy/oTSVNfiGa9AS/qdkKB0d+wupN1UxZuVw3VmeNdOt\nuchKK1ChTv9QWuz5eKFuHtKDFtJO6kzdNX62p5SfzpeLzGnYL6YzrmgCSBbMMj9m\nhw3pjOvJ3o7adH82+sTzF2oGyJ0TRyvGIH7NwyYOctMD6W/lcmAv8JX01Fo36odx\nqMYRZL+wdTopbIrzh2f+m6kHnfsT9qjUxZ9tx1wAAQKBgQDWveOAwe32Kn0an/lR\nuU3pDDCL4JhWcRAoUxq7MTeX0NK1ph8uMmGVSTcvhZRRkGm04Cm09KvV6MD04CGv\nO6k9uWdTT0OcPrkDM/zBgtFOW18tWchWg6flRz5fIe67U0LaDNs7VtGzc9ygPIy5\nSRib1o+20PR9+UhIbhvMdGAgMQKBgQDEZ6f5YlMdOHso6DY1rXHWjunfZF9+XTu8\nYiriE6Jmj79wY9WvZQYSe9QvGQJmlf4mjD2Icg9ufwIKrO5Q3BHDJ6Yk25HpfUhE\ner2WNs1IGmeJ4LYPp0Qrg0Z0YNuvBLVEyXKuLznx2fS9DYrbF/cN/0TY7zceSK7b\nF2711tCCAQKBgQDD/Hh3Wgc5ZRvawehFKw8tRB/GecvvEK+Dbh12fPvVBhRZDu1k\nNz0Sh8jjCVINgvTGzNOjwK5Xw17f3vM/P/89Q0pHIY9+OUyX3MmxPxiSIBhkho2u\nT+ha/EOzhX+h3eKkqZkothsbYgIZCEoTDOB10kRFwL1zf6D14fBjEE9u8QKBgQCV\nfHOr6ztpXSjYPM2t00J21LWK0uGf0yR5QJp1Eg6kUzqZN1NXuOODQ/5+jmF2ZSlY\ne5sF9BJsvnx2VaLZpnZafB4HpZsMBM/xVx5fa3yZKYeuuHq5tUy8daE1SNdMAaBa\nJ52Cl+1Zd9O/5MPP+BCQ9b6YApKIGTgFB3Pr50EyAQKBgEMGzEx75gGAIflrgC7E\nKYDsEOp7dLqsx13W2OS8UckvZ5CZrDyAUJgq9VUlscKsdMoXClMN+DT2Gnzqy5g4\nVTDlW/rZFuPVxmNmluNzic0HdE59k4tw8+qr1FxYjWT4DMfNyLVr7+Na2+XkwTQD\nZAc5eZRicB4qGeMETZBDOaPg\n-----END PRIVATE KEY-----\n",
+          "client_email": "concourse@clear-tape-855.iam.gserviceaccount.com",
+          "client_id": "103698173895213728444",
+          "type": "service_account"
+        }
+      regexp: concourse/demo-onlinestore-ui.jar
+
+  - name: cf-push
+    type: cf
+    source:
+      api: {{cf-api}}
+      username: {{cf-username}}
+      password: {{cf-password}}
+      organization: {{cf-org}}
+      space: {{cf-space}}
+      skip_cert_check: true
+
+######JOB######
+jobs:
+  - name: unit-test
+    public: true
+    plan:
+      - get: demo-onlinestore-ui
+        trigger: true
+      - task: unit
+        file: demo-onlinestore-ui/ci/tasks/unit.yml
+
+  - name: build-artifact
+    public: true
+    plan:
+      - get: demo-onlinestore-ui
+        trigger: true
+        passed: [ unit-test ]
+      - task: build
+        file: demo-onlinestore-ui/ci/tasks/build.yml
+      ##現在デプロイされているアプリのバージョンを取得し、テキストファイルに保存する
+      - task: get-currentapp
+        file: demo-onlinestore-ui/ci/tasks/get-currentapp.yml
+        params:
+          cf_api: {{cf-api}}
+          cf_username: {{cf-username}}
+          cf_password: {{cf-password}}
+          cf_organization: {{cf-org}}
+          cf_space: {{cf-space}}
+          app_preffix: {{app-preffix}}
+      ##保存されたテキストを使ってmanifest.ymlを編集する
+      - task: edit-manifest
+        file: demo-onlinestore-ui/ci/tasks/edit-manifest.yml
+        params:
+          app_preffix: {{app-preffix}}
+      - put: upload-artifact
+        params: 
+          file: build/demo-onlinestore-ui.jar
+      ##cf push
+      - put: cf-push
+        params:
+          manifest: app-manifest-output/manifest.yml
+          path: build/demo-onlinestore-ui.jar
+
+  - name: smoke-test
+    public: true
+    plan:
+      - get: demo-onlinestore-ui
+        trigger: true
+        passed: [ build-artifact ]
+      - task: smoke-test
+        file: demo-onlinestore-ui/ci/tasks/smoke.yml
+
+  - name: promote-new-version 
+    plan:
+      - get: demo-onlinestore-ui
+        trigger: true
+        passed: [ smoke-test ]
+      ##現在デプロイされているアプリのバージョンを取得し、テキストファイルに保存する
+      - task: get-currentapp
+        file: demo-onlinestore-ui/ci/tasks/get-currentapp.yml
+        params:
+          cf_api: {{cf-api}}
+          cf_username: {{cf-username}}
+          cf_password: {{cf-password}}
+          cf_organization: {{cf-org}}
+          cf_space: {{cf-space}}
+          app_preffix: {{app-preffix}}
+      - task: bg-upgrade
+        file: demo-onlinestore-ui/ci/tasks/bg-upgrade.yml
+        params: 
+          cf_api: {{cf-api}}
+          cf_username: {{cf-username}}
+          cf_password: {{cf-password}}
+          cf_organization: {{cf-org}}
+          cf_space: {{cf-space}}
+          app_preffix: {{app-preffix}}
+          app_domain: {{app-domain}}

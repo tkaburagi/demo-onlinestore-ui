@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+    tag: "latest"
+
+inputs:
+- name: demo-onlinestore-ui
+
+outputs:
+- name: current-app-info
+
+run:
+  path: demo-onlinestore-ui/ci/tasks/get-currentapp.sh

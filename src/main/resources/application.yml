@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: onlinestore-ui
+  
+  zipkin:
+    base-url: http://zipkin-server-tkaburagi.cfapps.io/
+    enabled: true
+    
+security:
+ basic:
+    enabled: false
+
+management:
+  security:
+    enabled: false
