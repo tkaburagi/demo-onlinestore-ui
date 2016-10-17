@@ -48,7 +48,7 @@ public class UiContoller {
 	@HystrixCommand
 	@RequestMapping("/v")
 	public String showVersion() {
-		return "v1";
+		return "v2";
 	}
 
 	@HystrixCommand
