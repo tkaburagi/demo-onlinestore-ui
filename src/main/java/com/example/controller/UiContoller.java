@@ -80,6 +80,7 @@ public class UiContoller {
 		session.setAttribute("cardnumber", userClient.getUserInfo(user).getCardnumber());
 		session.setAttribute("fullname", userClient.getUserInfo(user).getFullname());
 		System.out.println(session);
+		
 		model.addAttribute("prds", serviceClient.getProducts());
 		return "onlinestore/index";
 	}
