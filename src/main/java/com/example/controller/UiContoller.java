@@ -80,8 +80,11 @@ public class UiContoller {
 		session.setAttribute("cardnumber", userClient.getUserInfo(user).getCardnumber());
 		session.setAttribute("fullname", userClient.getUserInfo(user).getFullname());
 		System.out.println(session);
-		
 		model.addAttribute("prds", serviceClient.getProducts());
+		model.addAttribute("instance", orderClient.getInstance());
+		
+		System.out.println(orderClient.getInstance());
+		
 		return "onlinestore/index";
 	}
     
@@ -95,6 +98,8 @@ public class UiContoller {
         prd.setName("Error");
         prd.setPrice(000000);
         model.addAttribute("prds", prd);
+        model.addAttribute("instance", orderClient.getInstance());
+        
         return "onlinestore/index";
     }
 
@@ -118,6 +123,15 @@ public class UiContoller {
 		model.addAttribute("vcap_app", utils.getVCAP());
 		return "onlinestore/javainfo";
 	}
+	
+	@HystrixCommand
+	@RequestMapping("/search")
+	public String getPrdsByNameLike(@RequestParam("name") String name, Model model) throws JsonParseException, JsonMappingException, IOException {
+		model.addAttribute("prds", serviceClient.getProductsByName(name));
+		model.addAttribute("instance", orderClient.getInstance());
+		return "onlinestore/index";
+		
+	}
 
 	@HystrixCommand
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
@@ -126,5 +140,5 @@ public class UiContoller {
 		order.setProduct(request.getParameter("product"));
 		orderClient.saveOrder(order);
 		return "onlinestore/thankyou";
-	}
+	}	
 }

@@ -88,6 +88,8 @@ jobs:
         passed: [ build-artifact ]
       - task: smoke-test
         file: demo-onlinestore-ui/ci/tasks/smoke.yml
+        params:
+          app_domain: {{app-domain}}
 
   - name: promote-new-version 
     plan:

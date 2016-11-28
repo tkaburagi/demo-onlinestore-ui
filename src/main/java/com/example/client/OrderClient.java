@@ -40,7 +40,6 @@ public class OrderClient {
 		return orderhistory;
 	}
 	
-
 	@HystrixCommand
 	public void saveOrder(Orderhistory order) {
 		InstanceInfo instanceInfo = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
@@ -50,6 +49,15 @@ public class OrderClient {
 				.build()
 				.toString();
 		restTemplate.postForObject(targetUrl, order, Orderhistory.class);
+	}
+	
+
+	public String getInstance() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getinstance").build().toString();
+		String resultFromOrder = restTemplate.getForObject(targetUrl, String.class);
+		
+		return  resultFromOrder;
 	}
 
 }

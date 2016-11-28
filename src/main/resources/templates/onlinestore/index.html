@@ -108,9 +108,10 @@ table {
 				</form>
 			</li>
 			
-			<li class="pure-menu-item">
-				<form class="pure-form">
-					<input type="text" class="pure-input-rounded" />
+			<li class="pure-menu-item" >
+				<form class="pure-form" th:method="post" th:action="@{/search}">
+					<input type="text" class="pure-input-rounded" name="name" />
+					<input type="hidden"  name="user" th:value="${session.username}" />
 					<button type="submit" class="button-success pure-button">
 						<i class="fa fa-search fa-lg"></i><font class="logo"> Search</font></button>
 				</form>
@@ -124,6 +125,9 @@ table {
 			Welcome, <a th:text="${session.username}"></a>. Enjoy your shopping!
 		</h2>
 	</div>
+	
+	<div class="ta1"><a th:text="${instance}"></a></div>
+		
 	<table class="pure-table pure-table-striped table logo">
 		<thead>
 			<tr>
