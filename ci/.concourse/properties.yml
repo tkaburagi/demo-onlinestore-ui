@@ -1,22 +1,5 @@
 github-uri: https://github.com/tkaburagi1214/demo-onlinestore-ui.git
 github-branch: master
-###Pivotal Web Services
-#cf-api: https://api.run.pivotal.io
-#cf-username: #NAME
-#cf-password: #PASS
-#cf-org: labs-playground
-#cf-space: Takayuki Kaburagi
-
-###PCF Dev
-#cf-api: https://api.local.pcfdev.io
-#cf-username: user
-#cf-password: pass
-#cf-org: pcfdev-org
-#cf-space: pcfdev-space
-#app-domain: local.pcfdev.io
-#app-preffix: demo-onlinestore-ui
-
-###PCF
 cf-api: https://api.run.haas-70.pez.pivotal.io
 cf-username: tkaburagi
 cf-password: tkaburagi
