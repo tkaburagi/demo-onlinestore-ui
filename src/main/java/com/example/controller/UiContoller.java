@@ -21,6 +21,7 @@ import com.example.entity.Product;
 import com.example.util.Utils;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
@@ -99,7 +100,7 @@ public class UiContoller {
         prd.setName("Error");
         prd.setPrice(000000);
         model.addAttribute("prds", prd);
-//        model.addAttribute("instance", orderClient.getInstance());
+        model.addAttribute("instance", orderClient.getInstance());
         
         return "onlinestore/index";
     }
@@ -121,7 +122,10 @@ public class UiContoller {
 		if (session.getAttribute("username") == null) {
 			return utils.returnLogin();
 		}
-		model.addAttribute("vcap_app", utils.getVCAP());
+		String vcap = System.getenv("VCAP_APPLICATION");
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode vcap_app = mapper.readTree(vcap);
+		model.addAttribute("vcap_app", vcap_app.get("instance_index").asText());
 		return "onlinestore/javainfo";
 	}
 	

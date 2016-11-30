@@ -140,7 +140,7 @@ table {
 					<td width="20%" th:text="${#httpServletRequest.getLocalAddr()}" />
 					<td width="20%" th:text="${#httpServletRequest.getLocalPort()}" />
 					<td width="20%" th:text="${#httpServletRequest.getLocalName()}" />
-					<td width="20%" th:text="${vcap_app['instance_index']}" />		
+					<td width="20%" th:text="${vcap_app}" />		
 				</tr>
 			</th:block>
 	</table>
