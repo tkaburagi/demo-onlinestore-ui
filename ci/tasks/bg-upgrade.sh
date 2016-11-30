@@ -29,6 +29,9 @@ sleep 30; #for demo
 
 set +e
 cf unmap-route $CURRENT_APP_NAME $app_domain --hostname prd-$app_preffix
+cf unmap-route $CURRENT_APP_NAME $app_domain --hostname $app_preffix-temp
+
+cf delete -f $CURRENT_APP_NAME
 #cf unmap-route $NEXT_APP_NAME $app_domain --hostname $app_preffix-temp
 set -e
 
