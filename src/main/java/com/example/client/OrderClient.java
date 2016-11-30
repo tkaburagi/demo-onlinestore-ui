@@ -56,7 +56,6 @@ public class OrderClient {
 		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
 		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getinstance").build().toString();
 		String resultFromOrder = restTemplate.getForObject(targetUrl, String.class);
-		
 		return  resultFromOrder;
 	}
 

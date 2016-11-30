@@ -81,6 +81,7 @@ public class UiContoller {
 		session.setAttribute("fullname", userClient.getUserInfo(user).getFullname());
 		System.out.println(session);
 		model.addAttribute("prds", serviceClient.getProducts());
+		System.out.println("#####aaaaa#####");
 		model.addAttribute("instance", orderClient.getInstance());
 		
 		System.out.println(orderClient.getInstance());
@@ -98,7 +99,7 @@ public class UiContoller {
         prd.setName("Error");
         prd.setPrice(000000);
         model.addAttribute("prds", prd);
-        model.addAttribute("instance", orderClient.getInstance());
+//        model.addAttribute("instance", orderClient.getInstance());
         
         return "onlinestore/index";
     }

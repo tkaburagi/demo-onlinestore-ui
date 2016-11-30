@@ -40,7 +40,7 @@ public class ServiceClient {
 	public Product[] getProductsByName(String name) throws JsonParseException, JsonMappingException, IOException {
 		InstanceInfo instanceInfo = discoveryClient.getNextServerFromEureka("ONLINESTORE-SERVICE", false);
 		restTemplate = new RestTemplate();
-		String targetUrl = UriComponentsBuilder.fromUriString(instanceInfo.getHomePageUrl()).path("search").queryParam("name", name).build().toString();
+		String targetUrl = UriComponentsBuilder.fromUriString(instanceInfo.getHomePageUrl()).path("/search").queryParam("name", name).build().toString();
 		String result = restTemplate.getForObject(targetUrl, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		Product[] prd = mapper.readValue(result, Product[].class);
