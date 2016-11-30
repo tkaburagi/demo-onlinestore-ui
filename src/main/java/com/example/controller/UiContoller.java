@@ -125,6 +125,7 @@ public class UiContoller {
 		String vcap = System.getenv("VCAP_APPLICATION");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode vcap_app = mapper.readTree(vcap);
+		System.out.println(vcap_app.asText());
 		model.addAttribute("vcap_app", vcap_app.get("instance_index").asText());
 		return "onlinestore/javainfo";
 	}
