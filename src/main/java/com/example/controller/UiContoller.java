@@ -65,14 +65,33 @@ public class UiContoller {
 		System.exit(-1);
 		return utils.returnLogin();
 	}
+	
+	@RequestMapping("/killorder")
+	public String killorder() {
+		orderClient.kill();
+		return utils.returnLogin();
+	}
+	
+	@RequestMapping("/killservice")
+	public String kilservice() {
+		serviceClient.kill();
+		return utils.returnLogin();
+	}
+	
+	@RequestMapping("/killuser")
+	public String killuser() {
+		userClient.kill();
+		return utils.returnLogin();
+	}
 
     @HystrixCommand(fallbackMethod = "fallbackAuthUser")
     @RequestMapping("/auth")
 	public String authUser(@RequestParam("user") String user, HttpSession session, Model model)
 			throws JsonParseException, JsonMappingException, IOException {
-		if (session == null || user == null) {
+    	if (session == null || user == null) {
 			return utils.returnLogin();
 		}
+		
 		session.setAttribute("userid", userClient.getUserInfo(user).getId());
 		session.setAttribute("username", userClient.getUserInfo(user).getName());
 		session.setAttribute("address", userClient.getUserInfo(user).getAddress());
@@ -80,15 +99,14 @@ public class UiContoller {
 		session.setAttribute("company", userClient.getUserInfo(user).getCompany());
 		session.setAttribute("cardnumber", userClient.getUserInfo(user).getCardnumber());
 		session.setAttribute("fullname", userClient.getUserInfo(user).getFullname());
-		System.out.println(session);
-		model.addAttribute("prds", serviceClient.getProducts());
-		System.out.println("#####aaaaa#####");
-		model.addAttribute("instance", orderClient.getInstance());
 		
-		System.out.println(orderClient.getInstance());
+		model.addAttribute("prds", serviceClient.getProducts());
+		model.addAttribute("instance", orderClient.getInstance());
 		
 		return "onlinestore/index";
 	}
+    
+    
     
     @SuppressWarnings("unused")
     private String fallbackAuthUser(@RequestParam("user") String user, HttpSession session, Model model)
@@ -100,7 +118,7 @@ public class UiContoller {
         prd.setName("Error");
         prd.setPrice(000000);
         model.addAttribute("prds", prd);
-        model.addAttribute("instance", orderClient.getInstance());
+//      model.addAttribute("instance", orderClient.getInstance());
         
         return "onlinestore/index";
     }
@@ -115,18 +133,25 @@ public class UiContoller {
 		return "onlinestore/menu";
 	}
 
-	@HystrixCommand
 	@RequestMapping("/javainfo")
 	public String getJavaInfo(Model model, HttpSession session)
 			throws JsonParseException, JsonMappingException, IOException {
 		if (session.getAttribute("username") == null) {
 			return utils.returnLogin();
 		}
+		
 		String vcap = System.getenv("VCAP_APPLICATION");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode vcap_app = mapper.readTree(vcap);
-		System.out.println(vcap_app.asText());
-		model.addAttribute("vcap_app", vcap_app.get("instance_index").asText());
+		String[] UiList = new String[3];
+		UiList[0] = System.getenv("CF_INSTANCE_ADDR");
+		UiList[1] = System.getenv("VERSION");
+		UiList[2] = vcap_app.get("instance_index").asText();
+		
+		String[][] list = {orderClient.getLocalInfo(), userClient.getLocalInfo(), serviceClient.getLocalInfo(), UiList};
+				
+		model.addAttribute("list", list);
+
 		return "onlinestore/javainfo";
 	}
 	

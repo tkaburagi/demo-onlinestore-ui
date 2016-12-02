@@ -39,5 +39,30 @@ public class UserClient {
 		User user = mapper.readValue(result, User.class);
 		return user;
 	}
+	
+	@HystrixCommand(fallbackMethod = "fallbackGetInfo")
+	public String[] getLocalInfo() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-USER", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getlocalinfo").build().toString();
+		String[] resultFromUser = restTemplate.getForObject(targetUrl, String[].class);
+		return resultFromUser;
+	}
+	
+	@SuppressWarnings("unused")
+	private String[]  fallbackGetInfo() {
+		String[] list = new String[3];
+		list[0] = "-";
+		list[1] = "-";
+		list[2] = "-";
+		return list;
+	}
+	
+	public String kill() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-USER", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/kill").build().toString();
+		String resultFromUser = restTemplate.getForObject(targetUrl, String.class);
+		return resultFromUser;
+	}
+
 
 }

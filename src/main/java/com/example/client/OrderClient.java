@@ -56,7 +56,31 @@ public class OrderClient {
 		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
 		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getinstance").build().toString();
 		String resultFromOrder = restTemplate.getForObject(targetUrl, String.class);
-		return  resultFromOrder;
+		return resultFromOrder;
+	}
+	
+	@HystrixCommand(fallbackMethod = "fallbackGetInfo")
+	public String[] getLocalInfo() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getlocalinfo").build().toString();
+		String[] resultFromOrder = restTemplate.getForObject(targetUrl, String[].class);
+		return resultFromOrder;
+	}
+	
+	@SuppressWarnings("unused")
+	private String[]  fallbackGetInfo() {
+		String[] list = new String[3];
+		list[0] = "-";
+		list[1] = "-";
+		list[2] = "-";
+		return list;
+	}
+	
+	public String kill() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-ORDER", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/kill").build().toString();
+		String resultFromOrder = restTemplate.getForObject(targetUrl, String.class);
+		return resultFromOrder;
 	}
 
 }

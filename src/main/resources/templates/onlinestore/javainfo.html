@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http:///www.thymeleaf.org">
+<html xmlns:th="http:///www.http:///www.thymeleaf.org.org">
 <head>
 <link rel="stylesheet"
 	href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css" />
@@ -90,7 +90,7 @@ table {
 			<li class="pure-menu-item">
 				<form class="pure-form" th:method="post" th:action="@{/javainfo}"> 
 					<button type="submit" class="button-corp pure-button">
-					<i class="fa fa-leaf fa-lg"></i><font class="logo"> Java Information</font></button>
+					<i class="fa fa-leaf fa-lg"></i><font class="logo"> Apps Information</font></button>
 				</form>
 			</li>
 			
@@ -127,20 +127,61 @@ table {
 	<table class="pure-table pure-table-striped table logo" style="width:90%">
 			<thead>
 				<tr>
-					<th>User</th>
+					<th>Application Name</th>
+					<th>Version</th>
 					<th>IP Address</th>
-					<th>Port Number</th>
-					<th>Hostname</th>
 					<th>Index</th>
+					<th></th>
 				</tr>
 			</thead>
 			<th:block>
 				<tr>
-					<td width="20%" th:text="${session.username}" />
-					<td width="20%" th:text="${#httpServletRequest.getLocalAddr()}" />
-					<td width="20%" th:text="${#httpServletRequest.getLocalPort()}" />
-					<td width="20%" th:text="${#httpServletRequest.getLocalName()}" />
-					<td width="20%" th:text="${vcap_app}" />		
+					<td th:text="Order" />
+					<td th:text="${list[0][1]}" />	
+					<td th:text="${list[0][0]}" />
+					<td th:text="${list[0][2]}" />
+					<td width="3%" >
+						<form class="pure-form" th:method="post" th:action="@{/killorder}" >
+							<button type="submit" class="button-success pure-button">
+						<i class="fa fa-bomb fa-lg"></i><font class="logo"> Kill</font></button>
+						</form>	
+					</td>
+				</tr>
+				<tr>
+					<td th:text="User" />
+					<td th:text="${list[1][1]}" />
+					<td th:text="${list[1][0]}" />
+					<td th:text="${list[1][2]}" />
+					<td width="3%" >
+						<form class="pure-form" th:method="post" th:action="@{/killuser}" >
+							<button type="submit" class="button-error pure-button">
+						<i class="fa fa-bomb fa-lg"></i><font class="logo"> Kill</font></button>
+						</form>	
+					</td>
+				</tr>
+				<tr>
+					<td th:text="Service" />
+					<td th:text="${list[2][1]}" />
+					<td th:text="${list[2][0]}" />
+					<td th:text="${list[2][2]}" />
+					<td width="3%" >
+						<form class="pure-form" th:method="post" th:action="@{/killservice}" >
+							<button type="submit" class="button-warning pure-button">
+						<i class="fa fa-bomb fa-lg"></i><font class="logo"> Kill</font></button>
+						</form>	
+					</td>	
+				</tr>
+				<tr>
+					<td th:text="UI" />
+					<td th:text="${list[3][1]}" />
+					<td th:text="${list[3][0]}" />
+					<td th:text="${list[3][2]}" />
+					<td width="3%" >
+						<form class="pure-form" th:method="post" th:action="@{/kill}" >
+							<button type="submit" class="button-secondary pure-button">
+						<i class="fa fa-bomb fa-lg"></i><font class="logo"> Kill</font></button>
+						</form>	
+					</td>		
 				</tr>
 			</th:block>
 	</table>

@@ -30,7 +30,8 @@ public class ServiceClient {
 	public Product[] getProducts() throws JsonParseException, JsonMappingException, IOException {
 		InstanceInfo instanceInfo = discoveryClient.getNextServerFromEureka("ONLINESTORE-SERVICE", false);
 		restTemplate = new RestTemplate();
-		String result = restTemplate.getForObject(instanceInfo.getHomePageUrl(), String.class);
+		String targetUrl = UriComponentsBuilder.fromUriString(instanceInfo.getHomePageUrl()).path("/").build().toString();
+		String result = restTemplate.getForObject(targetUrl, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		Product[] prd = mapper.readValue(result, Product[].class);
 		return prd;
@@ -45,5 +46,29 @@ public class ServiceClient {
 		ObjectMapper mapper = new ObjectMapper();
 		Product[] prd = mapper.readValue(result, Product[].class);
 		return prd;
+	}
+	
+	@HystrixCommand(fallbackMethod = "fallbackGetInfo")
+	public String[] getLocalInfo() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-SERVICE", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/getlocalinfo").build().toString();
+		String[] resultFromService = restTemplate.getForObject(targetUrl, String[].class);
+		return resultFromService;
+	}
+
+	@SuppressWarnings("unused")
+	private String[]  fallbackGetInfo() {
+		String[] list = new String[3];
+		list[0] = "-";
+		list[1] = "-";
+		list[2] = "-";
+		return list;
+	}
+	
+	public String kill() {
+		InstanceInfo info = discoveryClient.getNextServerFromEureka("ONLINESTORE-SERVICE", false);
+		String targetUrl = UriComponentsBuilder.fromUriString(info.getHomePageUrl()).path("/kill").build().toString();
+		String resultFromService = restTemplate.getForObject(targetUrl, String.class);
+		return resultFromService;
 	}
 }
