@@ -10,9 +10,9 @@ applications:
    - service-registry
    - circuit-breaker
    - config-server
-  buildpack: java_buildpack_offline
+  buildpack: java_buildpack
   env:
    SPRING_PROFILES_ACTIVE: cloud 
    #CF_TARGET: https://api.local.pcfdev.io
-   CF_TARGET: https://api.run.haas-70.pez.pivotal.io
+   CF_TARGET: https://api.run.pivotal.io
    VERSION: 1
