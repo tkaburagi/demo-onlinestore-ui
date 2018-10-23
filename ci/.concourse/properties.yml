@@ -1,9 +1,9 @@
 github-uri: https://github.com/tkaburagi1214/demo-onlinestore-ui.git
 github-branch: master
 cf-api: https://api.run.pivotal.io
-cf-username: tkaburagi@pivotal.io
-cf-password: keiodai
-cf-org: labs-playground
-cf-space: "Takayuki Kaburagi"
-app-domain: "cfapps.io"
+cf-username: MAIL
+cf-password: PASSWD
+cf-org: ORG
+cf-space: SPACE
+app-domain: DOMAIN
 app-preffix: demo-onlinestore-ui
